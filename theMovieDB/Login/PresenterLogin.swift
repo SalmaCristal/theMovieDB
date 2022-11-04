@@ -13,28 +13,30 @@ enum FetchError: Error {
 protocol AnyPresenter {
     var router: AnyRouter? { get set }
     var interactor: AnyInteractor? { get set }
-    var view: AnyView? { get set }
+    var viewLogin: AnyView? { get set }
     
-    func interactorDidFetchUsers(with result: Result<[User], Error>)
+    func interactorDidFetchLogin(with result: Result<String, Error>)
 }
 
-class UserPresenter: AnyPresenter {
-    var router: AnyRouter?
+class PresenterLogin: AnyPresenter {
     
+    var router: AnyRouter?
+    var viewLogin: AnyView?
+   
     var interactor: AnyInteractor? {
         didSet {
-            interactor?.getUsers()
+            interactor?.login(username: "", password: "")
         }
     }
     
-    var view: AnyView?
     
-    func interactorDidFetchUsers(with result: Result<[User], Error>) {
+    
+    func interactorDidFetchLogin(with result: Result<String, Error>) {
         switch result {
-        case .success(let users):
-            view?.update(with: users)
-        case .failure:
-            view?.update(with: "Upss, Algo salio mal :(")
+        case .success(let response):
+            viewLogin?.loginResponse(with: response)
+        case .failure(let error):
+            viewLogin?.loginResponseError(with: error.localizedDescription)
         }
     }
     

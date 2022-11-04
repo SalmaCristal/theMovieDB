@@ -10,16 +10,21 @@ import UIKit
 
 protocol AnyView {
     var presenter: AnyPresenter? { get set }
+    var interactor: AnyInteractor? { get set }
+    func loginResponse(with result: String)
+    func loginResponseError(with error: String)
     
-    func update(with users: [User])
-    func update(with error: String)
 }
 
 @available(iOS 15.0, *)
-class UserViewController: UIViewController, AnyView {
+class LoginViewController: UIViewController, AnyView {
+    
+    
     
     var presenter: AnyPresenter?
-    
+    var interactor: AnyInteractor?
+   
+    //Label
     private let label: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -42,7 +47,7 @@ class UserViewController: UIViewController, AnyView {
         return passwordTextField
     }()
     
-    
+    //Boton Acceder
     private let accederButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
         configuration.title = "Log in"
@@ -71,9 +76,6 @@ class UserViewController: UIViewController, AnyView {
         return stackViewVertical
     }()
     
-    
-    var users: [User] = []
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .purple
@@ -84,10 +86,29 @@ class UserViewController: UIViewController, AnyView {
         stackViewVertical.addArrangedSubview(userNameTextField)
         stackViewVertical.addArrangedSubview(passwordTextField)
         stackViewVertical.addArrangedSubview(accederButton)
+        stackViewVertical.addArrangedSubview(label)
+        accederButton.addTarget(self, action: #selector(loginButonListener), for: .touchUpInside)
         
     }
     
-    private func confImage(){
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        confEditText()
+        confBotonAcceder()
+        confLabelError()
+    }
+    
+    private func confLabelError() {
+        label.textColor = .white
+        label.numberOfLines = 0
+        label.font = UIFont(name: "Helvetica Neue Bold", size: 15)
+        NSLayoutConstraint.activate([
+            label.heightAnchor.constraint(equalToConstant: 50),
+        ])
+    }
+    
+    private func confImage() {
         NSLayoutConstraint.activate([ // 5
                     imageLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                     imageLogo.bottomAnchor.constraint(equalTo: stackViewVertical.layoutMarginsGuide.topAnchor),
@@ -104,13 +125,6 @@ class UserViewController: UIViewController, AnyView {
                    stackViewVertical.centerYAnchor.constraint(equalTo: view.centerYAnchor)
                    
                ])
-    }
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-//        label.frame = CGRect(x: 0, y: 0, width: 200, height: 50)
-//        label.center = view.center
-        confEditText()
-        confBotonAcceder()
     }
     
     private func confEditText(){
@@ -144,24 +158,34 @@ class UserViewController: UIViewController, AnyView {
         ])
     }
     
-    
-    func update(with users: [User]) {
-        print("usuarios obtenidos \(users)")
-        DispatchQueue.main.async {
-            self.users = users
-        }
-    }
-    
-    func update(with error: String) {
-        print(error)
-        DispatchQueue.main.async {
-//            self.users = []
-//            self.label.isHidden = false
-//            self.label.text = error
-        }
-    }
-    
-   
+    // MARK: - Boton seleccionado
+    @objc private func loginButonListener(){
 
+        if userNameTextField.text != nil, passwordTextField.text != nil {
+            self.presenter?.interactor?.login(
+                username: userNameTextField.text!,
+                password: passwordTextField.text!
+            )
+        }
+
+
+    }
+    
+    
+//    Respuesta success
+    func loginResponse(with result: String) {
+        DispatchQueue.main.async {
+            self.view.backgroundColor = .yellow
+        }
+    }
+    
+//    Respuesta error
+    func loginResponseError(with error: String) {
+        DispatchQueue.main.async {
+            self.view.backgroundColor = .red
+            self.label.isHidden = false
+            self.label.text = error
+        }
+    }
     
 }

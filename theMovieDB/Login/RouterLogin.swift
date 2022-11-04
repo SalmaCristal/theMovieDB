@@ -26,15 +26,15 @@ class UserRouter: AnyRouter {
         let router = UserRouter()
         
         // Assign VIP
-        var view: AnyView = UserViewController()
-        var presenter: AnyPresenter = UserPresenter()
-        var interactor: AnyInteractor = UserInteractor()
+        var view: AnyView = LoginViewController()
+        var presenter: AnyPresenter = PresenterLogin()
+        var interactor: AnyInteractor = InteractorLogin()
         
         view.presenter = presenter
         
         interactor.presenter = presenter
         presenter.router = router
-        presenter.view = view
+        presenter.viewLogin = view
         presenter.interactor = interactor
         
         router.entry = view as? EntryPoint
