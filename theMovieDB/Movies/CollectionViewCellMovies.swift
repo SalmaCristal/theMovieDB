@@ -92,12 +92,33 @@ class CollectionViewCellMovies: UICollectionViewCell {
         return label
     }()
     
+    private let favoriteButton: UIButton = {
+        let button = UIButton(type: .system)
+        
+        if #available(iOS 15.0, *) {
+            var configuration = UIButton.Configuration.filled()
+            configuration.image = UIImage(systemName: "heart")
+            
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.configuration = configuration
+            return button
+        } else {
+            // Fallback on earlier versions
+            button.setImage(UIImage(named: "play.png"), for:.normal)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            return button
+        }
+      }()
+    
     override init(frame: CGRect) {
         super.init(frame: .zero)
         
         addSubview(swiftBetaStackView)
         addSubview(infoTextStackView)
+        addSubview(favoriteButton)
+        
         swiftBetaStackView.addArrangedSubview(deviceImageView)
+        
         infoTextStackView.addArrangedSubview(nameMovieLabel)
         infoTextStackView.addArrangedSubview(dateAndRateStackView)
         infoTextStackView.addArrangedSubview(resumeMovieLabel)
@@ -131,7 +152,12 @@ class CollectionViewCellMovies: UICollectionViewCell {
             ratedImage.heightAnchor.constraint(equalToConstant: 10),
             ratedImage.widthAnchor.constraint(equalToConstant: 10),
             pointsLabel.heightAnchor.constraint(equalToConstant: 15),
-            pointsLabel.widthAnchor.constraint(equalToConstant: 20)
+            pointsLabel.widthAnchor.constraint(equalToConstant: 20),
+            
+            favoriteButton.topAnchor.constraint(equalTo: swiftBetaStackView.layoutMarginsGuide.topAnchor),
+            favoriteButton.heightAnchor.constraint(equalToConstant: 40),
+            favoriteButton.widthAnchor.constraint(equalToConstant: 40),
+            favoriteButton.leadingAnchor.constraint(equalTo: swiftBetaStackView.layoutMarginsGuide.leadingAnchor)
             
             
         ])
@@ -143,12 +169,7 @@ class CollectionViewCellMovies: UICollectionViewCell {
     }
     
     func configure(model: Result) {
-        
-        
-        let url = URL(string: "https://lumiere-a.akamaihd.net/v1/images/56015l02_bigsal_argentina_intpayoff_4x5_b6776139.jpeg")
-        
-        
-        
+        let url = URL(string: "https://image.tmdb.org/t/p/original/\(model.posterPath)")
         deviceImageView.loader(url: url!)
         nameMovieLabel.text = model.title
         ratedImage.image = UIImage(systemName: "star.fill")

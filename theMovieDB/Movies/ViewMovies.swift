@@ -164,7 +164,7 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
         segmentedCategories.frame.size.height = 40
         
         // Make second segment selected
-        segmentedCategories.selectedSegmentIndex = 1
+        segmentedCategories.selectedSegmentIndex = 0
         
         //Change text color of UISegmentedControl
         segmentedCategories.tintColor = UIColor.yellow
@@ -182,6 +182,11 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
     @objc func segmentedValueChanged(_ sender:UISegmentedControl!)
     {
         print("Selected Segment Index is : \(sender.selectedSegmentIndex)")
+        
+        let moviesCategory = sender.selectedSegmentIndex
+        segmentedCategories.selectedSegmentIndex = moviesCategory
+        self.presenter?.interactor?.getMovies(category: moviesCategory)
+        self.collectionViewMovies.reloadData()
     }
     
     func update(with popular: Popular) {
@@ -219,6 +224,45 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
         
         cell.configure(model: model)
         return cell
+    }
+    
+    class test_ancestor {
+        var prop: Int = 0
+    }
+
+
+    class test: test_ancestor {
+        override var prop: Int {
+            get {
+                return super.prop // reaching ancestor prop
+            }
+            set {
+                super.prop = newValue
+            }
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("PELICULA SELECCIONADA \(indexPath.row)")
+        DispatchQueue.main.async {
+            
+            let model = (self.arrayPopular?[indexPath.row])!
+            print("PELICULA SELECCIONADA \(model.id)")
+            
+            let defaults = UserDefaults.standard
+            defaults.set(model.id, forKey: "id_movie")
+            
+            let userRouter = DetalleMovieRouter.start()
+            let initialVC = userRouter.entry
+            initialVC!.modalPresentationStyle = .overCurrentContext
+//            UIApplication.shared.windows.first?.rootViewController = initialVC
+//            UIApplication.shared.windows.first?.makeKeyAndVisible()
+            let navigationVc = UINavigationController(rootViewController: initialVC!)
+            navigationVc.modalPresentationStyle = .automatic
+            self.present(navigationVc, animated: true, completion: nil)
+            
+            
+        }
     }
     
 }

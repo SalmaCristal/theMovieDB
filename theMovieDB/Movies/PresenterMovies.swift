@@ -25,7 +25,8 @@ class MoviesPresenter: AnyPresenterMovies {
     
     var interactor: AnyInteractorMovies? {
         didSet {
-            interactor?.getUsers()
+            interactor?.getMovies(category: 0)
+            
         }
     }
     

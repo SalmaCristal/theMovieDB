@@ -25,6 +25,11 @@
 		BF32D3352914C0AA002A31C3 /* EntityLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF32D3342914C0AA002A31C3 /* EntityLogin.swift */; };
 		BF32D3372914C0C2002A31C3 /* RouterLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF32D3362914C0C2002A31C3 /* RouterLogin.swift */; };
 		BF63EF462916C51E007F49BA /* CollectionViewCellMovies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF63EF452916C51E007F49BA /* CollectionViewCellMovies.swift */; };
+		BF63EF4829177863007F49BA /* ViewDetalleMovie.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF63EF4729177863007F49BA /* ViewDetalleMovie.swift */; };
+		BF63EF4A2917788A007F49BA /* InteractorDetalleMovie.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF63EF492917788A007F49BA /* InteractorDetalleMovie.swift */; };
+		BF63EF4C291778A0007F49BA /* PresenterDetalleMovie.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF63EF4B291778A0007F49BA /* PresenterDetalleMovie.swift */; };
+		BF63EF4E291778CC007F49BA /* EntityDetalleMovie.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF63EF4D291778CC007F49BA /* EntityDetalleMovie.swift */; };
+		BF63EF50291778F4007F49BA /* RouterDetalleMovie.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF63EF4F291778F4007F49BA /* RouterDetalleMovie.swift */; };
 		F902B2D1F9D83239ABCCFA55 /* Pods_theMovieDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03A488F7CE449E5667B04527 /* Pods_theMovieDB.framework */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +56,11 @@
 		BF32D3342914C0AA002A31C3 /* EntityLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityLogin.swift; sourceTree = "<group>"; };
 		BF32D3362914C0C2002A31C3 /* RouterLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterLogin.swift; sourceTree = "<group>"; };
 		BF63EF452916C51E007F49BA /* CollectionViewCellMovies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCellMovies.swift; sourceTree = "<group>"; };
+		BF63EF4729177863007F49BA /* ViewDetalleMovie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewDetalleMovie.swift; sourceTree = "<group>"; };
+		BF63EF492917788A007F49BA /* InteractorDetalleMovie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractorDetalleMovie.swift; sourceTree = "<group>"; };
+		BF63EF4B291778A0007F49BA /* PresenterDetalleMovie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenterDetalleMovie.swift; sourceTree = "<group>"; };
+		BF63EF4D291778CC007F49BA /* EntityDetalleMovie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityDetalleMovie.swift; sourceTree = "<group>"; };
+		BF63EF4F291778F4007F49BA /* RouterDetalleMovie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterDetalleMovie.swift; sourceTree = "<group>"; };
 		D2F0A4C9C0DE8E43E628107E /* Pods-theMovieDB.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-theMovieDB.release.xcconfig"; path = "Target Support Files/Pods-theMovieDB/Pods-theMovieDB.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -138,6 +148,11 @@
 		BF32D32D2914C03E002A31C3 /* DetalleMovie */ = {
 			isa = PBXGroup;
 			children = (
+				BF63EF4729177863007F49BA /* ViewDetalleMovie.swift */,
+				BF63EF492917788A007F49BA /* InteractorDetalleMovie.swift */,
+				BF63EF4B291778A0007F49BA /* PresenterDetalleMovie.swift */,
+				BF63EF4D291778CC007F49BA /* EntityDetalleMovie.swift */,
+				BF63EF4F291778F4007F49BA /* RouterDetalleMovie.swift */,
 			);
 			path = DetalleMovie;
 			sourceTree = "<group>";
@@ -267,16 +282,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF32D3312914C085002A31C3 /* InteractorLogin.swift in Sources */,
+				BF63EF4C291778A0007F49BA /* PresenterDetalleMovie.swift in Sources */,
 				BF32D3192914BE28002A31C3 /* ViewController.swift in Sources */,
+				BF63EF50291778F4007F49BA /* RouterDetalleMovie.swift in Sources */,
 				BF32D3352914C0AA002A31C3 /* EntityLogin.swift in Sources */,
 				BF32D3152914BE28002A31C3 /* AppDelegate.swift in Sources */,
 				BF32D32F2914C071002A31C3 /* ViewLogin.swift in Sources */,
 				BF2FF0352915A4B300DCEB34 /* EntityMovies.swift in Sources */,
 				BF32D31F2914BE28002A31C3 /* theMovieDB.xcdatamodeld in Sources */,
+				BF63EF4829177863007F49BA /* ViewDetalleMovie.swift in Sources */,
 				BF32D3172914BE28002A31C3 /* SceneDelegate.swift in Sources */,
 				BF63EF462916C51E007F49BA /* CollectionViewCellMovies.swift in Sources */,
+				BF63EF4A2917788A007F49BA /* InteractorDetalleMovie.swift in Sources */,
 				BF2FF0312915A45900DCEB34 /* InteractorMovies.swift in Sources */,
 				BF2FF02D2915A41D00DCEB34 /* ViewMovies.swift in Sources */,
+				BF63EF4E291778CC007F49BA /* EntityDetalleMovie.swift in Sources */,
 				BF32D3332914C095002A31C3 /* PresenterLogin.swift in Sources */,
 				BF2FF0372915A4E600DCEB34 /* RouterMovies.swift in Sources */,
 				BF32D3372914C0C2002A31C3 /* RouterLogin.swift in Sources */,
