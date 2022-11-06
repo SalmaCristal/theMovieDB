@@ -16,13 +16,14 @@ protocol AnyView {
     
 }
 
-@available(iOS 15.0, *)
+@available(iOS 14.0, *)
 class LoginViewController: UIViewController, AnyView {
     
     
     
     var presenter: AnyPresenter?
     var interactor: AnyInteractor?
+    var router: AnyRouter?
    
     //Label
     private let label: UILabel = {
@@ -49,14 +50,20 @@ class LoginViewController: UIViewController, AnyView {
     
     //Boton Acceder
     private let accederButton: UIButton = {
-        var configuration = UIButton.Configuration.filled()
-        configuration.title = "Log in"
-        
         let accederButton = UIButton(type: .system)
-        accederButton.translatesAutoresizingMaskIntoConstraints = false
-        accederButton.configuration = configuration
+        if #available(iOS 15.0, *) {
+            var configuration = UIButton.Configuration.filled()
+            configuration.title = "Log in"
+            accederButton.translatesAutoresizingMaskIntoConstraints = false
+            accederButton.configuration = configuration
+            
+            return accederButton
+        } else {
+            // Fallback on earlier versions
+            accederButton.setTitle("Log in", for: UIControl.State.highlighted)
+            return accederButton
+        }
         
-        return accederButton
     }()
     
     //Imagen logo
@@ -166,9 +173,9 @@ class LoginViewController: UIViewController, AnyView {
                 username: userNameTextField.text!,
                 password: passwordTextField.text!
             )
+        }else {
+            self.loginResponseError(with: "Los campos no pueden estar vacios")
         }
-
-
     }
     
     
@@ -176,6 +183,11 @@ class LoginViewController: UIViewController, AnyView {
     func loginResponse(with result: String) {
         DispatchQueue.main.async {
             self.view.backgroundColor = .yellow
+            let userRouter = MoviesRouter.start()
+            let initialVC = userRouter.entry
+            UIApplication.shared.windows.first?.rootViewController = initialVC
+            UIApplication.shared.windows.first?.makeKeyAndVisible()
+    
         }
     }
     

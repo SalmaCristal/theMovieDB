@@ -15,7 +15,7 @@ protocol AnyPresenter {
     var interactor: AnyInteractor? { get set }
     var viewLogin: AnyView? { get set }
     
-    func interactorDidFetchLogin(with result: Result<String, Error>)
+    func interactorDidFetchLogin(with result: Swift.Result<String, Error>)
 }
 
 class PresenterLogin: AnyPresenter {
@@ -31,7 +31,7 @@ class PresenterLogin: AnyPresenter {
     
     
     
-    func interactorDidFetchLogin(with result: Result<String, Error>) {
+    func interactorDidFetchLogin(with result: Swift.Result<String, Error>) {
         switch result {
         case .success(let response):
             viewLogin?.loginResponse(with: response)

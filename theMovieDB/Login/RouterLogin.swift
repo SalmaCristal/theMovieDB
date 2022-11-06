@@ -17,7 +17,7 @@ protocol AnyRouter {
     static func start() -> AnyRouter
 }
 
-@available(iOS 15.0, *)
+@available(iOS 14.0, *)
 class UserRouter: AnyRouter {
     
     var entry: EntryPoint?

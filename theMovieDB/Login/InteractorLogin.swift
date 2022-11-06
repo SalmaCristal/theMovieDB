@@ -31,10 +31,7 @@ class InteractorLogin: AnyInteractor {
                     self.presenter?.interactorDidFetchLogin(with: .failure(error!))
                 }
             }
-        } else {
-            self.presenter?.interactorDidFetchLogin(with: .failure("Los campos no pueden estar vacios" as! Error))
-        }
-       
+        } 
     }
     
    
