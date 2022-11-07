@@ -1,22 +1,22 @@
 //
-//  InteractorDetalleMovie.swift
+//  InteractorProfile.swift
 //  theMovieDB
 //
-//  Created by Salma Garcia on 05/11/22.
+//  Created by Salma Garcia on 06/11/22.
 //
 
 import Foundation
 import FirebaseAuth
 
-protocol DetalleMovieInteractorProtocol {
-    var presenter: DetalleMoviePresenterProtocol? { get set }
-    var viewLogin: DetalleMovieViewProtocol? { get set }
+protocol ProfileInteractorProtocol {
+    var presenter: ProfilePresenterProtocol? { get set }
+    var viewLogin: ProfileViewProtocol? { get set }
     func getMovieDetails(id: Int)
 }
 
-class InteractorDetalleMovie: DetalleMovieInteractorProtocol {
-    var viewLogin: DetalleMovieViewProtocol?
-    var presenter: DetalleMoviePresenterProtocol?
+class InteractorProfile: ProfileInteractorProtocol {
+    var viewLogin: ProfileViewProtocol?
+    var presenter: ProfilePresenterProtocol?
     
     
     func getMovieDetails(id: Int) {

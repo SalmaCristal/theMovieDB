@@ -9,6 +9,8 @@ import UIKit
 
 class CollectionViewCellMovies: UICollectionViewCell {
     
+    let defaults = UserDefaults.standard
+    
     private let swiftBetaStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -127,6 +129,7 @@ class CollectionViewCellMovies: UICollectionViewCell {
         dateAndRateStackView.addArrangedSubview(ratedImage)
         dateAndRateStackView.addArrangedSubview(pointsLabel)
         
+        favoriteButton.addTarget(self, action: #selector(favoriteIn), for: .touchUpInside)
         NSLayoutConstraint.activate([
             swiftBetaStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
             swiftBetaStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -157,8 +160,8 @@ class CollectionViewCellMovies: UICollectionViewCell {
             favoriteButton.topAnchor.constraint(equalTo: swiftBetaStackView.layoutMarginsGuide.topAnchor),
             favoriteButton.heightAnchor.constraint(equalToConstant: 40),
             favoriteButton.widthAnchor.constraint(equalToConstant: 40),
-            favoriteButton.leadingAnchor.constraint(equalTo: swiftBetaStackView.layoutMarginsGuide.leadingAnchor)
-            
+            favoriteButton.leadingAnchor.constraint(equalTo: swiftBetaStackView.layoutMarginsGuide.leadingAnchor),
+           
             
         ])
         
@@ -166,6 +169,37 @@ class CollectionViewCellMovies: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Boton seleccionado
+    @objc private func favoriteIn(){
+        
+        var systemNameForIcon = ""
+        let ifFavorite = defaults.bool(forKey: defaultKeys.favorite)
+        
+        if !ifFavorite {
+            systemNameForIcon = imageFavorite.IsFavorite.rawValue
+            defaults.set(true, forKey: defaultKeys.favorite)
+        } else {
+            systemNameForIcon = imageFavorite.IsNotFavorite.rawValue
+            defaults.set(false, forKey: defaultKeys.favorite)
+        }
+        
+        if #available(iOS 15.0, *) {
+            var configuration = UIButton.Configuration.filled()
+            configuration.image = UIImage(systemName: systemNameForIcon)
+            
+            favoriteButton.translatesAutoresizingMaskIntoConstraints = false
+            favoriteButton.configuration = configuration
+            
+        } else {
+            // Fallback on earlier versions
+            favoriteButton.setImage(UIImage(systemName: systemNameForIcon), for:.normal)
+            favoriteButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        }
+        
+        
     }
     
     func configure(model: Result) {

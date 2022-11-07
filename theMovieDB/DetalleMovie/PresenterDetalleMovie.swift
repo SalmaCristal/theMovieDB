@@ -25,12 +25,11 @@ class PresenterDetalleMovie: DetalleMoviePresenterProtocol{
     var router: DetalleMovieRouterProtocol?
     var view: DetalleMovieViewProtocol?
     
-    var viewMoviesController = MoviesViewController.test()
 
     var interactor: DetalleMovieInteractorProtocol? {
         didSet {
             let defaults = UserDefaults.standard
-            let idOfMovie = defaults.integer(forKey: "id_movie")
+            let idOfMovie = defaults.integer(forKey: defaultKeys.id_movie)
             interactor?.getMovieDetails(id: idOfMovie)
         }
         

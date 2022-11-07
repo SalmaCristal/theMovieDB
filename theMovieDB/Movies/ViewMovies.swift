@@ -86,7 +86,7 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        collectionViewMovies.frame = view.bounds
+//        collectionViewMovies.frame = view.bounds
         label.frame = CGRect(x: 0, y: 0, width: 205, height: 50)
         label.center = view.center
         confSegmentedSelected()
@@ -118,7 +118,7 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
         
         customNavigationItem = UINavigationItem()
         
-        let rightBarButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(menuOpciones))
+        let rightBarButton = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(menuOpciones))
         customNavigationItem.rightBarButtonItem = rightBarButton
         customNavigationItem.title = "TV Shows"
         navigationBar.tintColor = .white
@@ -164,7 +164,7 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
         segmentedCategories.frame.size.height = 40
         
         // Make second segment selected
-        segmentedCategories.selectedSegmentIndex = 0
+//        segmentedCategories.selectedSegmentIndex = 0
         
         //Change text color of UISegmentedControl
         segmentedCategories.tintColor = UIColor.yellow
@@ -184,6 +184,7 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
         print("Selected Segment Index is : \(sender.selectedSegmentIndex)")
         
         let moviesCategory = sender.selectedSegmentIndex
+        
         segmentedCategories.selectedSegmentIndex = moviesCategory
         self.presenter?.interactor?.getMovies(category: moviesCategory)
         self.collectionViewMovies.reloadData()
@@ -210,6 +211,31 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
     
     @objc func menuOpciones(){
         print("MENU.......")
+        let alert = UIAlertController(title: "¿What do you what to do?", message: nil, preferredStyle: UIAlertController.Style.actionSheet)
+        alert.addAction(UIAlertAction(title: "View Profile", style: UIAlertAction.Style.default, handler: navegarViewProfile))
+        alert.addAction(UIAlertAction(title: "Log out", style: UIAlertAction.Style.destructive, handler: nil))
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
+
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    // View Profile Action
+    func navegarViewProfile(alert: UIAlertAction!) {
+        print("NAVEGAR.......")
+        self.dismiss(animated: true)
+        let userRouter = ProfileRouter.start()
+        let initialVC = userRouter.entry
+        initialVC!.modalPresentationStyle = .overCurrentContext
+        let navigationVc = UINavigationController(rootViewController: initialVC!)
+        navigationVc.modalPresentationStyle = .automatic
+        self.present(navigationVc, animated: true, completion: nil)
+    }
+    
+  
+    
+    // Log out Action
+    func someHandler(alert: UIAlertAction!) {
+        
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -225,22 +251,6 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
         cell.configure(model: model)
         return cell
     }
-    
-    class test_ancestor {
-        var prop: Int = 0
-    }
-
-
-    class test: test_ancestor {
-        override var prop: Int {
-            get {
-                return super.prop // reaching ancestor prop
-            }
-            set {
-                super.prop = newValue
-            }
-        }
-    }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("PELICULA SELECCIONADA \(indexPath.row)")
@@ -250,7 +260,7 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
             print("PELICULA SELECCIONADA \(model.id)")
             
             let defaults = UserDefaults.standard
-            defaults.set(model.id, forKey: "id_movie")
+            defaults.set(model.id, forKey: defaultKeys.id_movie)
             
             let userRouter = DetalleMovieRouter.start()
             let initialVC = userRouter.entry

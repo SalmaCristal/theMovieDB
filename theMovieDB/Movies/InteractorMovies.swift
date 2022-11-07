@@ -7,17 +7,6 @@
 
 import Foundation
 
-enum categoryName: String {
-    case Popular = "popular"
-    case TopRated = "top_rated"
-    case OnTV = "on_the_air"
-    case AiringToday = "airing_today"
-}
-enum showsType : String {
-    case TV = "tv"
-    case Movie = "movie"
-}
-
 protocol AnyInteractorMovies {
     var presenter: AnyPresenterMovies? { get set }
     
