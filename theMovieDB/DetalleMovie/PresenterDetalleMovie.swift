@@ -16,6 +16,7 @@ protocol DetalleMoviePresenterProtocol {
     var view: DetalleMovieViewProtocol? { get set }
     
     func interactorDidFetchDetalleMovie(with result: Swift.Result<DetalleMovie, Error>)
+    func interactorDidFetchVideos(with result: Swift.Result<DetalleVideo, Error>)
 }
 
 @available(iOS 14.0, *)
@@ -30,7 +31,9 @@ class PresenterDetalleMovie: DetalleMoviePresenterProtocol{
         didSet {
             let defaults = UserDefaults.standard
             let idOfMovie = defaults.integer(forKey: defaultKeys.id_movie)
-            interactor?.getMovieDetails(id: idOfMovie)
+            let showsTypes = defaults.string(forKey: defaultKeys.is_tv_or_movie)
+            interactor?.getMovieDetails(id: idOfMovie, tipo: showsTypes ?? showsType.Movie.rawValue)
+            interactor?.getVideos(id: idOfMovie, tipo: showsTypes ?? showsType.Movie.rawValue)
         }
         
     }
@@ -43,5 +46,14 @@ class PresenterDetalleMovie: DetalleMoviePresenterProtocol{
         }
     }
     
-   
+    func interactorDidFetchVideos(with result: Swift.Result<DetalleVideo, Error>) {
+        switch result {
+        case .success(let response):
+            view?.videoResponse(with: response)
+        case .failure(let error):
+            view?.videoResponseError(with: error.localizedDescription)
+        }
+    }
+        
+        
 }

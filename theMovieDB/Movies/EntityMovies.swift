@@ -37,6 +37,7 @@ struct Result: Codable {
     let firstAirDate, name: String?
     let originCountry: [String]?
     let originalName: String?
+    let tagline: String?
 
     enum CodingKeys: String, CodingKey {
         case adult
@@ -55,6 +56,7 @@ struct Result: Codable {
         case name
         case originCountry = "origin_country"
         case originalName = "original_name"
+        case tagline = "tagline"
     }
 }
 

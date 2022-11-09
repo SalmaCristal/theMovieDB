@@ -15,7 +15,6 @@ protocol ProfilePresenterProtocol {
     var interactor: ProfileInteractorProtocol? { get set }
     var view: ProfileViewProtocol? { get set }
     
-    func interactorDidFetchDetalleMovie(with result: Swift.Result<DetalleMovie, Error>)
 }
 
 @available(iOS 14.0, *)
@@ -26,22 +25,7 @@ class PresenterProfile: ProfilePresenterProtocol{
     var view: ProfileViewProtocol?
     
 
-    var interactor: ProfileInteractorProtocol? {
-        didSet {
-//            let defaults = UserDefaults.standard
-//            let idOfMovie = defaults.integer(forKey: defaultKeys.id_movie)
-//            interactor?.getMovieDetails(id: idOfMovie)
-        }
-        
-    }
-    func interactorDidFetchDetalleMovie(with result: Swift.Result<DetalleMovie, Error>) {
-        switch result {
-        case .success(let response):
-            view?.profileResponse(with: response)
-        case .failure(let error):
-            view?.profileResponseError(with: error.localizedDescription)
-        }
-    }
+    var interactor: ProfileInteractorProtocol?    
     
    
 }

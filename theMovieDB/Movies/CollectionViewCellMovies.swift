@@ -7,17 +7,16 @@
 
 import UIKit
 
+@available(iOS 14.0, *)
 class CollectionViewCellMovies: UICollectionViewCell {
-    
     let defaults = UserDefaults.standard
-    
+   
     private let swiftBetaStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.layer.borderColor = UIColor.black.cgColor
         stackView.layer.cornerRadius = 15
-        
         return stackView
     }()
     
@@ -52,7 +51,7 @@ class CollectionViewCellMovies: UICollectionViewCell {
     
     private let nameMovieLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Helvetica Neue Bold", size: 12)
+        label.font = UIFont(name: AppConstant.font_helvetica_bold, size: 12)
         label.numberOfLines = 0
         label.textColor = .green
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -61,7 +60,7 @@ class CollectionViewCellMovies: UICollectionViewCell {
     
     private let resumeMovieLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Helvetica Neue Bold", size: 10)
+        label.font = UIFont(name: AppConstant.font_helvetica_bold, size: 10)
         label.numberOfLines = 4
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -70,7 +69,7 @@ class CollectionViewCellMovies: UICollectionViewCell {
     
     private let dateLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Helvetica Neue Bold", size: 10)
+        label.font = UIFont(name: AppConstant.font_helvetica_bold, size: 10)
         label.numberOfLines = 4
         label.textColor = .green
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -87,7 +86,7 @@ class CollectionViewCellMovies: UICollectionViewCell {
     
     private let pointsLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Helvetica Neue Bold", size: 10)
+        label.font = UIFont(name: AppConstant.font_helvetica_bold, size: 10)
         label.numberOfLines = 4
         label.textColor = .green
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -99,14 +98,14 @@ class CollectionViewCellMovies: UICollectionViewCell {
         
         if #available(iOS 15.0, *) {
             var configuration = UIButton.Configuration.filled()
-            configuration.image = UIImage(systemName: "heart")
+            configuration.image = UIImage(systemName: AppConstant.icono_heart)
             
             button.translatesAutoresizingMaskIntoConstraints = false
             button.configuration = configuration
             return button
         } else {
             // Fallback on earlier versions
-            button.setImage(UIImage(named: "play.png"), for:.normal)
+            button.setImage(UIImage(named: AppConstant.icono_heart), for:.normal)
             button.translatesAutoresizingMaskIntoConstraints = false
             return button
         }
@@ -130,89 +129,125 @@ class CollectionViewCellMovies: UICollectionViewCell {
         dateAndRateStackView.addArrangedSubview(pointsLabel)
         
         favoriteButton.addTarget(self, action: #selector(favoriteIn), for: .touchUpInside)
+    
+        confPrimerStackView()
+        confInfoImageAndLabelName()
+        confDateAndRateStackView()
+        confPointsAndRated()
+        confFavoriteButton()
+    }
+    
+    private func confPrimerStackView () {
         NSLayoutConstraint.activate([
             swiftBetaStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
             swiftBetaStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             swiftBetaStackView.topAnchor.constraint(equalTo: self.topAnchor),
             swiftBetaStackView.heightAnchor.constraint(equalToConstant: 190),
             
-            infoTextStackView.topAnchor.constraint(equalTo: swiftBetaStackView.layoutMarginsGuide.bottomAnchor),
-            infoTextStackView.trailingAnchor.constraint(equalTo: deviceImageView.layoutMarginsGuide.trailingAnchor),
-            infoTextStackView.leadingAnchor.constraint(equalTo: deviceImageView.layoutMarginsGuide.leadingAnchor),
-            infoTextStackView.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor),
-            
-            deviceImageView.heightAnchor.constraint(equalTo: swiftBetaStackView.heightAnchor),
-            
-            nameMovieLabel.topAnchor.constraint(equalTo: infoTextStackView.layoutMarginsGuide.topAnchor),
-            nameMovieLabel.widthAnchor.constraint(equalTo: infoTextStackView.widthAnchor),
-            nameMovieLabel.heightAnchor.constraint(equalToConstant: 35),
-            
+        ])
+   }
+    
+    
+    private func confInfoImageAndLabelName () {
+       NSLayoutConstraint.activate([
+        infoTextStackView.topAnchor.constraint(equalTo: swiftBetaStackView.layoutMarginsGuide.bottomAnchor),
+        infoTextStackView.trailingAnchor.constraint(equalTo: deviceImageView.layoutMarginsGuide.trailingAnchor),
+        infoTextStackView.leadingAnchor.constraint(equalTo: deviceImageView.layoutMarginsGuide.leadingAnchor),
+        infoTextStackView.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor),
+        
+        deviceImageView.heightAnchor.constraint(equalTo: swiftBetaStackView.heightAnchor),
+        
+        nameMovieLabel.topAnchor.constraint(equalTo: infoTextStackView.layoutMarginsGuide.topAnchor),
+        nameMovieLabel.widthAnchor.constraint(equalTo: infoTextStackView.widthAnchor),
+        nameMovieLabel.heightAnchor.constraint(equalToConstant: 35),
+      ])
+   }
+    
+     private func confDateAndRateStackView () {
+        NSLayoutConstraint.activate([
             dateAndRateStackView.topAnchor.constraint(equalTo: nameMovieLabel.bottomAnchor),
             dateAndRateStackView.trailingAnchor.constraint(equalTo: deviceImageView.layoutMarginsGuide.trailingAnchor),
             dateAndRateStackView.leadingAnchor.constraint(equalTo: deviceImageView.layoutMarginsGuide.leadingAnchor),
             dateAndRateStackView.bottomAnchor.constraint(equalTo: resumeMovieLabel.layoutMarginsGuide.topAnchor),
-            
-            ratedImage.heightAnchor.constraint(equalToConstant: 10),
-            ratedImage.widthAnchor.constraint(equalToConstant: 10),
-            pointsLabel.heightAnchor.constraint(equalToConstant: 15),
-            pointsLabel.widthAnchor.constraint(equalToConstant: 20),
-            
-            favoriteButton.topAnchor.constraint(equalTo: swiftBetaStackView.layoutMarginsGuide.topAnchor),
-            favoriteButton.heightAnchor.constraint(equalToConstant: 40),
-            favoriteButton.widthAnchor.constraint(equalToConstant: 40),
-            favoriteButton.leadingAnchor.constraint(equalTo: swiftBetaStackView.layoutMarginsGuide.leadingAnchor),
-           
-            
-        ])
-        
+       ])
+    }
+    
+    private func confPointsAndRated () {
+        NSLayoutConstraint.activate([
+        ratedImage.heightAnchor.constraint(equalToConstant: 10),
+        ratedImage.widthAnchor.constraint(equalToConstant: 10),
+        pointsLabel.heightAnchor.constraint(equalToConstant: 15),
+        pointsLabel.widthAnchor.constraint(equalToConstant: 20),
+       ])
+    }
+    
+    private func confFavoriteButton () {
+        NSLayoutConstraint.activate([
+        favoriteButton.topAnchor.constraint(equalTo: swiftBetaStackView.layoutMarginsGuide.topAnchor),
+        favoriteButton.heightAnchor.constraint(equalToConstant: 40),
+        favoriteButton.widthAnchor.constraint(equalToConstant: 40),
+        favoriteButton.leadingAnchor.constraint(equalTo: swiftBetaStackView.layoutMarginsGuide.leadingAnchor),
+       ])
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        fatalError(AppConstant.init_code_message)
     }
+    
+
     
     // MARK: - Boton seleccionado
     @objc private func favoriteIn(){
         
-        var systemNameForIcon = ""
-        let ifFavorite = defaults.bool(forKey: defaultKeys.favorite)
-        
-        if !ifFavorite {
-            systemNameForIcon = imageFavorite.IsFavorite.rawValue
-            defaults.set(true, forKey: defaultKeys.favorite)
-        } else {
-            systemNameForIcon = imageFavorite.IsNotFavorite.rawValue
-            defaults.set(false, forKey: defaultKeys.favorite)
-        }
+        let systemNameForIcon = Utilities().changeEstateButtonFavorite()
+        let iconoFav = systemNameForIcon.0
+        let accionFav = systemNameForIcon.1
+        _ = systemNameForIcon.2
         
         if #available(iOS 15.0, *) {
-            var configuration = UIButton.Configuration.filled()
-            configuration.image = UIImage(systemName: systemNameForIcon)
             
+            var configuration = UIButton.Configuration.filled()
+            configuration.image = UIImage(systemName: iconoFav!)
             favoriteButton.translatesAutoresizingMaskIntoConstraints = false
             favoriteButton.configuration = configuration
             
         } else {
             // Fallback on earlier versions
-            favoriteButton.setImage(UIImage(systemName: systemNameForIcon), for:.normal)
+            favoriteButton.setImage(UIImage(systemName: iconoFav!), for:.normal)
             favoriteButton.translatesAutoresizingMaskIntoConstraints = false
         
         }
         
-        
+        if accionFav == accionFavoritos.guardarFav.rawValue {
+//            presenter?.interactor?.guardarMovie(id: idMovie)
+
+        } else {
+//            presenter?.interactor
+        }
     }
     
-    func configure(model: Result) {
-        let url = URL(string: "https://image.tmdb.org/t/p/original/\(model.posterPath)")
+ 
+    
+    func configure(model: Result, tipo: Int) {
+        let url = URL(string: "\(AppConstant.HOST_MEDIA)\(model.posterPath)")
+        let overview = model.overview
+        let title = model.title
         deviceImageView.loader(url: url!)
-        nameMovieLabel.text = model.title
-        ratedImage.image = UIImage(systemName: "star.fill")
-        dateLabel.text = model.releaseDate
+    
+        ratedImage.image = UIImage(systemName: AppConstant.icono_star_fill)
+        
         pointsLabel.text = String(model.voteAverage)
-        resumeMovieLabel.text = model.overview
+        resumeMovieLabel.text = overview
+        if (tipo <= segmentosType.TopRates.rawValue ) {
+            self.defaults.set(showsType.Movie.rawValue, forKey: defaultKeys.is_tv_or_movie)
+            nameMovieLabel.text = title
+            dateLabel.text = model.releaseDate
+        } else {
+            self.defaults.set(showsType.TV.rawValue, forKey: defaultKeys.is_tv_or_movie)
+            nameMovieLabel.text = model.name
+            dateLabel.text = model.firstAirDate
+        }
     }
-    
-    
 }
 
 extension UIImageView {

@@ -1,28 +1,28 @@
 //
-//  ViewProfile.swift
+//  ViewFavorites.swift
 //  theMovieDB
 //
-//  Created by Salma Garcia on 06/11/22.
+//  Created by Salma Garcia on 08/11/22.
 //
 
 import Foundation
 import UIKit
 
-protocol ProfileViewProtocol {
-    var presenter: ProfilePresenterProtocol? { get set }
-    var interactor: ProfileInteractorProtocol? { get set }
-    func profileResponse(with result: DetalleMovie)
-    func profileResponseError(with error: String)
+protocol FavoritesViewProtocol {
+    var presenter: FavoritesPresenterProtocol? { get set }
+    var interactor: FavoritesInteractorProtocol? { get set }
+    func FavoritesResponse(with result: DetalleMovie)
+    func FavoritesResponseError(with error: String)
     
 }
 
 @available(iOS 14.0, *)
-class ProfileViewController: UIViewController, ProfileViewProtocol {
+class FavoritesViewController: UIViewController, FavoritesViewProtocol {
 
 
-    var presenter: ProfilePresenterProtocol?
-    var interactor: ProfileInteractorProtocol?
-    var router: ProfileRouterProtocol?
+    var presenter: FavoritesPresenterProtocol?
+    var interactor: FavoritesInteractorProtocol?
+    var router: FavoritesRouterProtocol?
     
    //Label
     private let label: UILabel = {
@@ -31,7 +31,7 @@ class ProfileViewController: UIViewController, ProfileViewProtocol {
     }()
     
     //StackViewPadre
-    private let stackViewVerticalProfile: UIStackView = {
+    private let stackViewVerticalFavorites: UIStackView = {
         let stackViewVerticalMovies = UIStackView()
         stackViewVerticalMovies.translatesAutoresizingMaskIntoConstraints = false
         stackViewVerticalMovies.axis = .vertical
@@ -40,7 +40,7 @@ class ProfileViewController: UIViewController, ProfileViewProtocol {
     }()
     
     //StackViewHijo
-    private let stackViewHorizontalProfile: UIStackView = {
+    private let stackViewHorizontalFavorites: UIStackView = {
         let stackViewVerticalMovies = UIStackView()
         stackViewVerticalMovies.translatesAutoresizingMaskIntoConstraints = false
         stackViewVerticalMovies.axis = .horizontal
@@ -65,12 +65,12 @@ class ProfileViewController: UIViewController, ProfileViewProtocol {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(stackViewVerticalProfile)
-        stackViewVerticalProfile.addArrangedSubview(label)
-        stackViewVerticalProfile.addArrangedSubview(stackViewHorizontalProfile)
-        stackViewHorizontalProfile.addArrangedSubview(imagePerfil)
-        stackViewHorizontalProfile.addArrangedSubview(labelEmail)
-        view.backgroundColor = .black
+        view.addSubview(stackViewVerticalFavorites)
+        stackViewVerticalFavorites.addArrangedSubview(label)
+        stackViewVerticalFavorites.addArrangedSubview(stackViewHorizontalFavorites)
+        stackViewHorizontalFavorites.addArrangedSubview(imagePerfil)
+        stackViewHorizontalFavorites.addArrangedSubview(labelEmail)
+        view.backgroundColor = .systemPink
         confTitleLabel()
         confStackViewVertical()
         confStackViewHorizontal()
@@ -85,7 +85,7 @@ class ProfileViewController: UIViewController, ProfileViewProtocol {
     
     private func confTitleLabel(){
         label.textColor = .green
-        label.text = AppConstant.profile_text
+        label.text = AppConstant.favorite_text
         label.font = UIFont(name: AppConstant.font_helvetica_bold, size: 30)
         NSLayoutConstraint.activate([
             label.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
@@ -98,8 +98,8 @@ class ProfileViewController: UIViewController, ProfileViewProtocol {
     private func confImage(){
         imagePerfil.image = UIImage(named: AppConstant.image_profile);
          NSLayoutConstraint.activate([
-            imagePerfil.topAnchor.constraint(equalTo: stackViewHorizontalProfile.layoutMarginsGuide.topAnchor),
-            imagePerfil.leadingAnchor.constraint(equalTo: stackViewHorizontalProfile.layoutMarginsGuide.leadingAnchor),
+            imagePerfil.topAnchor.constraint(equalTo: stackViewHorizontalFavorites.layoutMarginsGuide.topAnchor),
+            imagePerfil.leadingAnchor.constraint(equalTo: stackViewHorizontalFavorites.layoutMarginsGuide.leadingAnchor),
             imagePerfil.heightAnchor.constraint(equalToConstant: 160),
             imagePerfil.widthAnchor.constraint(equalToConstant: 160)
         ])
@@ -112,29 +112,29 @@ class ProfileViewController: UIViewController, ProfileViewProtocol {
         labelEmail.text = email
         labelEmail.font = UIFont(name: AppConstant.font_helvetica_bold, size: 12)
         NSLayoutConstraint.activate([
-            labelEmail.topAnchor.constraint(equalTo: stackViewHorizontalProfile.layoutMarginsGuide.topAnchor, constant: 10),
+            labelEmail.topAnchor.constraint(equalTo: stackViewHorizontalFavorites.layoutMarginsGuide.topAnchor, constant: 10),
             labelEmail.leadingAnchor.constraint(equalTo: imagePerfil.layoutMarginsGuide.leadingAnchor, constant: 10),
-            labelEmail.trailingAnchor.constraint(equalTo: stackViewVerticalProfile.layoutMarginsGuide.trailingAnchor),
+            labelEmail.trailingAnchor.constraint(equalTo: stackViewVerticalFavorites.layoutMarginsGuide.trailingAnchor),
         ])
     }
     
     
     private func confStackViewVertical(){
         NSLayoutConstraint.activate([
-            stackViewVerticalProfile.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
-            stackViewVerticalProfile.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
-            stackViewVerticalProfile.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
-            stackViewVerticalProfile.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            stackViewVerticalFavorites.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
+            stackViewVerticalFavorites.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
+            stackViewVerticalFavorites.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
+            stackViewVerticalFavorites.centerXAnchor.constraint(equalTo: view.centerXAnchor)
             
         ])
     }
     
     private func confStackViewHorizontal(){
         NSLayoutConstraint.activate([
-            stackViewHorizontalProfile.topAnchor.constraint(equalTo: label.layoutMarginsGuide.bottomAnchor),
-            stackViewHorizontalProfile.leadingAnchor.constraint(equalTo: stackViewVerticalProfile.leadingAnchor),
-            stackViewHorizontalProfile.trailingAnchor.constraint(equalTo: stackViewVerticalProfile.layoutMarginsGuide.trailingAnchor, constant: -10),
-            stackViewHorizontalProfile.centerXAnchor.constraint(equalTo: stackViewVerticalProfile.centerXAnchor)
+            stackViewHorizontalFavorites.topAnchor.constraint(equalTo: label.layoutMarginsGuide.bottomAnchor),
+            stackViewHorizontalFavorites.leadingAnchor.constraint(equalTo: stackViewVerticalFavorites.leadingAnchor),
+            stackViewHorizontalFavorites.trailingAnchor.constraint(equalTo: stackViewVerticalFavorites.layoutMarginsGuide.trailingAnchor, constant: -10),
+            stackViewHorizontalFavorites.centerXAnchor.constraint(equalTo: stackViewVerticalFavorites.centerXAnchor)
             
         ])
     }
@@ -142,13 +142,13 @@ class ProfileViewController: UIViewController, ProfileViewProtocol {
   
   
 //    Respuesta success
-    func profileResponse(with detalle: DetalleMovie) {
+    func FavoritesResponse(with detalle: DetalleMovie) {
         DispatchQueue.main.async {
         }
     }
     
 //    Respuesta error
-    func profileResponseError(with error: String) {
+    func FavoritesResponseError(with error: String) {
         DispatchQueue.main.async {
             self.view.backgroundColor = .red
         }

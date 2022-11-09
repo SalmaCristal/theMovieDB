@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SVProgressHUD
 
 
 protocol AnyViewMovies {
@@ -14,6 +15,8 @@ protocol AnyViewMovies {
     
     func update(with users: Popular)
     func update(with error: String)
+    func signOutSuccesss()
+    func signOutError(errorMessage: String)
 }
 
 @available(iOS 14.0, *)
@@ -23,7 +26,9 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
     var dtoPopular:ResultMovies?
     private var customNavigationItem: UINavigationItem!
     private var navigationBar: UINavigationBar!
+    
     let segmentedCategories = UISegmentedControl (items: ["Popular","Top rated","On TV", "Airing Today"])
+    let defaults = UserDefaults.standard
     
     private let label: UILabel = {
         let label = UILabel()
@@ -55,9 +60,7 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = .init(width: 178, height: 310)
         layout.scrollDirection = .vertical
-        layout.collectionView?.backgroundColor = .darkGray
-       
-        
+        layout.collectionView?.backgroundColor = .purple
         let collectionViewMovies = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionViewMovies.translatesAutoresizingMaskIntoConstraints = false
         return collectionViewMovies
@@ -69,24 +72,21 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(label)
-        view.backgroundColor = .darkGray
+        view.backgroundColor = .black
      
         confNavigationBar()
-        
         stackViewVertical.addArrangedSubview(segmentedCategories)
         segmentedCategories.center = view.center
         confCollectionData()
-//        stackViewVerticalMovies.addArrangedSubview(collectionViewMovies)
         collectionViewMovies.delegate = self
         collectionViewMovies.dataSource = self
-        collectionViewMovies.register(CollectionViewCellMovies.self, forCellWithReuseIdentifier: "CollectionViewCellMovies")
+        collectionViewMovies.register(CollectionViewCellMovies.self, forCellWithReuseIdentifier:  AppConstant.colleccionViewCellMovies)
       
        
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-//        collectionViewMovies.frame = view.bounds
         label.frame = CGRect(x: 0, y: 0, width: 205, height: 50)
         label.center = view.center
         confSegmentedSelected()
@@ -95,14 +95,13 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
     }
     
     func confCollectionData() {
-        collectionViewMovies.backgroundColor = .darkGray
+        collectionViewMovies.backgroundColor = .black
         stackViewVerticalMovies.addArrangedSubview(collectionViewMovies)
         NSLayoutConstraint.activate([
             collectionViewMovies.topAnchor.constraint(equalTo: stackViewVertical.bottomAnchor, constant: 10),
-//            collectionViewMovies.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             collectionViewMovies.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant: 0),
             collectionViewMovies.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor,  constant: 0),
-            collectionViewMovies.heightAnchor.constraint(equalTo: view.heightAnchor, constant: 0)
+            collectionViewMovies.heightAnchor.constraint(equalTo: view.layoutMarginsGuide.heightAnchor, multiplier: 4/5)
             
         ])
         
@@ -115,16 +114,17 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
             width: self.view.frame.width,
             height: 44
         ))
-        
         customNavigationItem = UINavigationItem()
+        let rightBarButton = UIBarButtonItem(image: UIImage(systemName: AppConstant.icono_menu), style: .plain, target: self, action: #selector(menuOpciones))
+        rightBarButton.tintColor = .white
         
-        let rightBarButton = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(menuOpciones))
         customNavigationItem.rightBarButtonItem = rightBarButton
-        customNavigationItem.title = "TV Shows"
+        customNavigationItem.title = AppConstant.title_navbar
         navigationBar.tintColor = .white
         let appearance = UINavigationBarAppearance()
-        appearance.backgroundColor = .none
+        appearance.backgroundColor = .darkGray
         appearance.shadowColor = .clear
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
         navigationBar.isTranslucent = false
         navigationBar.standardAppearance = appearance
             
@@ -140,15 +140,13 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
     private func confStackView(){
         NSLayoutConstraint.activate([
             stackViewVertical.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 10),
-//            stackViewVertical.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
-//            stackViewVertical.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
             stackViewVertical.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stackViewVertical.heightAnchor.constraint(equalToConstant: 35)
             
         ])
     }
     private func confStackViewMovies(){
-        stackViewVerticalMovies.backgroundColor = .red
+        stackViewVerticalMovies.backgroundColor = .black
         NSLayoutConstraint.activate([
             stackViewVerticalMovies.topAnchor.constraint(equalTo: stackViewVertical.bottomAnchor, constant: 10),
             stackViewVerticalMovies.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor),
@@ -162,40 +160,26 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
     func confSegmentedSelected () {
        
         segmentedCategories.frame.size.height = 40
-        
-        // Make second segment selected
-//        segmentedCategories.selectedSegmentIndex = 0
-        
-        //Change text color of UISegmentedControl
+        let tipoVista = UserDefaults.standard.integer(forKey: defaultKeys.segmento)
+        segmentedCategories.selectedSegmentIndex = tipoVista
         segmentedCategories.tintColor = UIColor.yellow
-        
-        //Change UISegmentedControl background colour
         segmentedCategories.backgroundColor = UIColor.darkGray
-        
-        
-        // Add function to handle Value Changed events
         segmentedCategories.addTarget(self, action: #selector(self.segmentedValueChanged(_:)), for: .valueChanged)
-    
-        
     }
     
     @objc func segmentedValueChanged(_ sender:UISegmentedControl!)
     {
-        print("Selected Segment Index is : \(sender.selectedSegmentIndex)")
-        
         let moviesCategory = sender.selectedSegmentIndex
-        
+        self.defaults.set(moviesCategory, forKey: defaultKeys.segmento)
         segmentedCategories.selectedSegmentIndex = moviesCategory
         self.presenter?.interactor?.getMovies(category: moviesCategory)
         self.collectionViewMovies.reloadData()
     }
     
     func update(with popular: Popular) {
-        print("usuarios obtenidos")
         DispatchQueue.main.async {
             self.arrayPopular = popular.results
             self.collectionViewMovies.reloadData()
-//            self.tableView.isHidden = false
         }
     }
     
@@ -203,25 +187,21 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
         print(error)
         DispatchQueue.main.async {
             self.arrayPopular = []
-//            self.tableView.isHidden = true
             self.label.isHidden = false
             self.label.text = error
         }
     }
     
     @objc func menuOpciones(){
-        print("MENU.......")
-        let alert = UIAlertController(title: "¿What do you what to do?", message: nil, preferredStyle: UIAlertController.Style.actionSheet)
-        alert.addAction(UIAlertAction(title: "View Profile", style: UIAlertAction.Style.default, handler: navegarViewProfile))
-        alert.addAction(UIAlertAction(title: "Log out", style: UIAlertAction.Style.destructive, handler: nil))
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
-
+        let alert = UIAlertController(title: AppConstant.what_do_you_want_to_do, message: nil, preferredStyle: UIAlertController.Style.actionSheet)
+        alert.addAction(UIAlertAction(title: AppConstant.view_profile, style: UIAlertAction.Style.default, handler: navegarViewProfile))
+        alert.addAction(UIAlertAction(title: AppConstant.log_out, style: UIAlertAction.Style.destructive, handler: cerrarSesion))
+        alert.addAction(UIAlertAction(title: AppConstant.cancelar, style: UIAlertAction.Style.cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
     
     // View Profile Action
     func navegarViewProfile(alert: UIAlertAction!) {
-        print("NAVEGAR.......")
         self.dismiss(animated: true)
         let userRouter = ProfileRouter.start()
         let initialVC = userRouter.entry
@@ -230,43 +210,60 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
         navigationVc.modalPresentationStyle = .automatic
         self.present(navigationVc, animated: true, completion: nil)
     }
-    
-  
-    
-    // Log out Action
-    func someHandler(alert: UIAlertAction!) {
-        
+    // View Profile Action
+    func navegarViewFavorites(alert: UIAlertAction!) {
+        self.dismiss(animated: true)
+        let userRouter = FavoritesRouter.start()
+        let initialVC = userRouter.entry
+        initialVC!.modalPresentationStyle = .overCurrentContext
+        let navigationVc = UINavigationController(rootViewController: initialVC!)
+        navigationVc.modalPresentationStyle = .automatic
+        self.present(navigationVc, animated: true, completion: nil)
     }
+    
+    // Cerrar Sesion
+    func cerrarSesion(alert: UIAlertAction!) {
+        SVProgressHUD.show(withStatus: AppConstant.cargando)
+        presenter?.interactor?.cerrarSession()
+    }
+    
+    func signOutSuccesss() {
+        SVProgressHUD.dismiss()
+        let userRouter = UserRouter.start()
+        let initialVC = userRouter.entry
+        let navigationVc = UINavigationController(rootViewController: initialVC!)
+        navigationVc.modalPresentationStyle = .fullScreen
+        self.present(navigationVc, animated: true, completion: nil)
+    }
+    
+    func signOutError(errorMessage: String) {
+        let alert = UIAlertController(title: AppConstant.errorMessage, message: errorMessage, preferredStyle: UIAlertController.Style.actionSheet)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return arrayPopular?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CollectionViewCellMovies", for: indexPath) as! CollectionViewCellMovies
-        cell.backgroundColor = .black
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AppConstant.colleccionViewCellMovies, for: indexPath) as! CollectionViewCellMovies
+        cell.backgroundColor = .darkGray
         cell.layer.cornerRadius = 15
         let model = (arrayPopular?[indexPath.row])!
-        
-        cell.configure(model: model)
+        let tipoVista = defaults.integer(forKey: defaultKeys.segmento)
+        cell.configure(model: model, tipo: tipoVista)
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("PELICULA SELECCIONADA \(indexPath.row)")
         DispatchQueue.main.async {
             
             let model = (self.arrayPopular?[indexPath.row])!
-            print("PELICULA SELECCIONADA \(model.id)")
-            
-            let defaults = UserDefaults.standard
-            defaults.set(model.id, forKey: defaultKeys.id_movie)
-            
+            self.defaults.set(model.id, forKey: defaultKeys.id_movie)
             let userRouter = DetalleMovieRouter.start()
             let initialVC = userRouter.entry
             initialVC!.modalPresentationStyle = .overCurrentContext
-//            UIApplication.shared.windows.first?.rootViewController = initialVC
-//            UIApplication.shared.windows.first?.makeKeyAndVisible()
             let navigationVc = UINavigationController(rootViewController: initialVC!)
             navigationVc.modalPresentationStyle = .automatic
             self.present(navigationVc, animated: true, completion: nil)

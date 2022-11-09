@@ -11,20 +11,22 @@ import FirebaseAuth
 protocol DetalleMovieInteractorProtocol {
     var presenter: DetalleMoviePresenterProtocol? { get set }
     var viewLogin: DetalleMovieViewProtocol? { get set }
-    func getMovieDetails(id: Int)
+    func getMovieDetails(id: Int, tipo:String)
+    func getVideos(id: Int, tipo:String)
 }
 
 class InteractorDetalleMovie: DetalleMovieInteractorProtocol {
     var viewLogin: DetalleMovieViewProtocol?
     var presenter: DetalleMoviePresenterProtocol?
     
+    let HOST = AppConstant.HOST
+    let API_KEY = AppConstant.API_KEY
+    let LANG = AppConstant.LANG
     
-    func getMovieDetails(id: Int) {
-        let HOST = AppConstant.HOST
-        let API_KEY = AppConstant.API_KEY
-        let LANG = AppConstant.LANG
-        
-        guard let url = URL(string: "https://api.themoviedb.org/3/movie/\(id)?api_key=101c77c5a1d21a36d6a86d4fe9c0ac78&language=es-ES") else { return }
+    func getMovieDetails(id: Int, tipo: String) {
+      
+        let urlHost = HOST + tipo + String(id) + API_KEY + LANG
+        guard let url = URL(string:urlHost) else { return }
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
             guard let data = data, error == nil else {
                 self?.presenter?.interactorDidFetchDetalleMovie(with: .failure(FetchError.failed))
@@ -36,6 +38,26 @@ class InteractorDetalleMovie: DetalleMovieInteractorProtocol {
             }
             catch {
                 self?.presenter?.interactorDidFetchDetalleMovie(with: .failure(error))
+            }
+        }
+        task.resume()
+    }
+    
+    func getVideos(id: Int, tipo:String) {
+        
+        let urlHost = HOST + tipo + String(id) + AppConstant.video + API_KEY + LANG
+        guard let url = URL(string:urlHost) else { return }
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            guard let data = data, error == nil else {
+                self?.presenter?.interactorDidFetchVideos(with: .failure(FetchError.failed))
+                return
+            }
+            do {
+                let entities = try JSONDecoder().decode(DetalleVideo.self, from: data)
+                self?.presenter?.interactorDidFetchVideos(with: .success(entities))
+            }
+            catch {
+                self?.presenter?.interactorDidFetchVideos(with: .failure(error))
             }
         }
         task.resume()

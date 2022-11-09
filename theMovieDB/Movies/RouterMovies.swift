@@ -31,14 +31,11 @@ class MoviesRouter: AnyRouterMovies {
         var interactor: AnyInteractorMovies = MoviesInteractor()
         
         view.presenter = presenter
-        
         interactor.presenter = presenter
         presenter.router = router
         presenter.view = view
         presenter.interactor = interactor
-        
         router.entry = view as? EntryPointMovies
-        
         return router
     }
 }

@@ -22,14 +22,7 @@ class PresenterLogin: AnyPresenter {
     
     var router: AnyRouter?
     var viewLogin: AnyView?
-   
-    var interactor: AnyInteractor? {
-        didSet {
-            interactor?.login(username: "", password: "")
-        }
-    }
-    
-    
+    var interactor: AnyInteractor? 
     
     func interactorDidFetchLogin(with result: Swift.Result<String, Error>) {
         switch result {
@@ -39,7 +32,4 @@ class PresenterLogin: AnyPresenter {
             viewLogin?.loginResponseError(with: error.localizedDescription)
         }
     }
-    
-    
-    
 }

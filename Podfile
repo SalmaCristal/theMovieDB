@@ -8,5 +8,6 @@ target 'theMovieDB' do
   # Pods for theMovieDB
     pod 'FirebaseAnalytics'
     pod 'FirebaseUI/Auth'
+    pod 'SVProgressHUD'
 
 end

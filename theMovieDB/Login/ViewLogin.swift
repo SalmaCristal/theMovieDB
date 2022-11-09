@@ -7,6 +7,8 @@
 
 import Foundation
 import UIKit
+import SVProgressHUD
+
 
 protocol AnyView {
     var presenter: AnyPresenter? { get set }
@@ -53,14 +55,14 @@ class LoginViewController: UIViewController, AnyView {
         let accederButton = UIButton(type: .system)
         if #available(iOS 15.0, *) {
             var configuration = UIButton.Configuration.filled()
-            configuration.title = "Log in"
+            configuration.title = AppConstant.log_in
             accederButton.translatesAutoresizingMaskIntoConstraints = false
             accederButton.configuration = configuration
             
             return accederButton
         } else {
             // Fallback on earlier versions
-            accederButton.setTitle("Log in", for: UIControl.State.highlighted)
+            accederButton.setTitle(AppConstant.log_in, for: UIControl.State.highlighted)
             return accederButton
         }
         
@@ -69,9 +71,16 @@ class LoginViewController: UIViewController, AnyView {
     //Imagen logo
     private let imageLogo: UIImageView = {
         let imageLogo = UIImageView()
-        imageLogo.image = UIImage(named: "logo")
+        imageLogo.image = UIImage(named: AppConstant.icono_login)
         imageLogo.translatesAutoresizingMaskIntoConstraints = false
         return imageLogo
+    }()
+    //View logo
+    private let viewTransparent: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.7)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     //StackView
@@ -80,16 +89,24 @@ class LoginViewController: UIViewController, AnyView {
         stackViewVertical.translatesAutoresizingMaskIntoConstraints = false
         stackViewVertical.axis = .vertical
         stackViewVertical.spacing = 20
+        
         return stackViewVertical
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .purple
+        comprobarSesionUsuarioAutenticado ()
+        hideKeyboardWhenTappedAround()
         view.addSubview(imageLogo)
+        view.addSubview(viewTransparent)
         view.addSubview(stackViewVertical)
+        SVProgressHUD.setContainerView(view)
+        SVProgressHUD.setBackgroundColor(.white)
+        SVProgressHUD.setInfoImage(.add)
+        
         confStackView()
         confImage()
+        confViewTransparent()
         stackViewVertical.addArrangedSubview(userNameTextField)
         stackViewVertical.addArrangedSubview(passwordTextField)
         stackViewVertical.addArrangedSubview(accederButton)
@@ -107,28 +124,38 @@ class LoginViewController: UIViewController, AnyView {
     }
     
     private func confLabelError() {
-        label.textColor = .white
+        label.textColor = .red
         label.numberOfLines = 0
-        label.font = UIFont(name: "Helvetica Neue Bold", size: 15)
+        label.font = UIFont(name: AppConstant.font_helvetica, size: 13)
         NSLayoutConstraint.activate([
-            label.heightAnchor.constraint(equalToConstant: 50),
+            label.heightAnchor.constraint(equalToConstant: 25),
         ])
     }
     
     private func confImage() {
         NSLayoutConstraint.activate([ // 5
-                    imageLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                    imageLogo.bottomAnchor.constraint(equalTo: stackViewVertical.layoutMarginsGuide.topAnchor),
-                    imageLogo.heightAnchor.constraint(equalToConstant: 150),
-                    imageLogo.widthAnchor.constraint(equalToConstant: 150),
-                ])
+            imageLogo.heightAnchor.constraint(equalTo: view.heightAnchor),
+            imageLogo.widthAnchor.constraint(equalTo: view.widthAnchor),
+            imageLogo.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
+            imageLogo.topAnchor.constraint(equalTo: view.topAnchor)
+                                    ])
+    }
+    
+    private func confViewTransparent() {
+        
+        NSLayoutConstraint.activate([ // 5
+            viewTransparent.heightAnchor.constraint(equalTo: view.heightAnchor),
+            viewTransparent.widthAnchor.constraint(equalTo: view.widthAnchor),
+            viewTransparent.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
+            viewTransparent.topAnchor.constraint(equalTo: view.topAnchor)
+                                    ])
     }
     
     private func confStackView(){
         NSLayoutConstraint.activate([
-                   stackViewVertical.topAnchor.constraint(equalTo: imageLogo.bottomAnchor, constant: 20),
-                   stackViewVertical.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
-                   stackViewVertical.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
+                   stackViewVertical.topAnchor.constraint(equalTo: imageLogo.bottomAnchor, constant: 45),
+                   stackViewVertical.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant: 20),
+                   stackViewVertical.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: -20),
                    stackViewVertical.centerYAnchor.constraint(equalTo: view.centerYAnchor)
                    
                ])
@@ -141,12 +168,12 @@ class LoginViewController: UIViewController, AnyView {
         userNameTextField.textColor = .gray
         passwordTextField.backgroundColor = .white
         passwordTextField.layer.cornerRadius = 8
-        passwordTextField.placeholder = "Password"
+        passwordTextField.placeholder = AppConstant.password
        
         
         let myAttribute = [ NSAttributedString.Key.foregroundColor: UIColor.gray ]
-        let usernamePlaceHolder = NSAttributedString(string: " Username", attributes: myAttribute)
-        let passwordPlaceHolder = NSAttributedString(string: " Password", attributes: myAttribute)
+        let usernamePlaceHolder = NSAttributedString(string: " \(AppConstant.username)", attributes: myAttribute)
+        let passwordPlaceHolder = NSAttributedString(string: " \(AppConstant.password)", attributes: myAttribute)
         userNameTextField.attributedPlaceholder = usernamePlaceHolder
         passwordTextField.attributedPlaceholder = passwordPlaceHolder
         
@@ -167,37 +194,50 @@ class LoginViewController: UIViewController, AnyView {
     
     // MARK: - Boton seleccionado
     @objc private func loginButonListener(){
-
-        if userNameTextField.text != nil, passwordTextField.text != nil {
+       
+        if userNameTextField.text != "", passwordTextField.text != ""{
+            SVProgressHUD.show(withStatus: AppConstant.cargando)
             self.presenter?.interactor?.login(
                 username: userNameTextField.text!,
                 password: passwordTextField.text!
             )
         }else {
-            self.loginResponseError(with: "Los campos no pueden estar vacios")
+            self.loginResponseError(with: AppConstant.campos_vacios_message)
         }
     }
     
     
 //    Respuesta success
     func loginResponse(with result: String) {
+       
         DispatchQueue.main.async {
+            SVProgressHUD.dismiss()
             self.view.backgroundColor = .yellow
             let userRouter = MoviesRouter.start()
             let initialVC = userRouter.entry
             UIApplication.shared.windows.first?.rootViewController = initialVC
             UIApplication.shared.windows.first?.makeKeyAndVisible()
-    
         }
     }
     
 //    Respuesta error
     func loginResponseError(with error: String) {
         DispatchQueue.main.async {
+            SVProgressHUD.dismiss()
             self.view.backgroundColor = .red
             self.label.isHidden = false
             self.label.text = error
         }
     }
     
+    func comprobarSesionUsuarioAutenticado () {
+        let defaults = UserDefaults.standard
+        if let email = defaults.value(forKey: defaultKeys.email) as? String{
+            self.view.backgroundColor = .yellow
+            let userRouter = MoviesRouter.start()
+            let initialVC = userRouter.entry
+            UIApplication.shared.windows.first?.rootViewController = initialVC
+            UIApplication.shared.windows.first?.makeKeyAndVisible()
+        }
+    }
 }

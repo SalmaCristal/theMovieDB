@@ -6,60 +6,62 @@
 //
 
 import Foundation
+import FirebaseAuth
+import FirebaseCore
+import SVProgressHUD
 
 protocol AnyInteractorMovies {
     var presenter: AnyPresenterMovies? { get set }
     
     func getMovies(category: Int)
+    func cerrarSession()
     
 }
 
 class MoviesInteractor: AnyInteractorMovies {
     var presenter: AnyPresenterMovies?
+    let HOST = AppConstant.HOST
+    let API_KEY = AppConstant.API_KEY
+    let LANG = AppConstant.LANG
     
     func getMovies(category: Int) {
-        var movieCategory = ""
-        var showsKind = ""
-        switch category {
-        case 0:
-            movieCategory = categoryName.Popular.rawValue
-            showsKind = showsType.Movie.rawValue
-            break
-        case 1:
-            movieCategory = categoryName.TopRated.rawValue
-            showsKind = showsType.Movie.rawValue
-            break
-        case 2:
-            movieCategory = categoryName.OnTV.rawValue
-            showsKind = showsType.TV.rawValue
-            break
-        case 3:
-            movieCategory = categoryName.AiringToday.rawValue
-            showsKind = showsType.TV.rawValue
-            break
-        default:
-            movieCategory = categoryName.Popular.rawValue
-            showsKind = showsType.Movie.rawValue
-        }
-        print("Start fetching")
-        guard let url = URL(string: "https://api.themoviedb.org/3/\(showsKind)/\(movieCategory)?api_key=101c77c5a1d21a36d6a86d4fe9c0ac78&language=es-ES") else { return }
+        let categoryAndShow = Utilities().getCategoryAndShowType(category: category)
+        let movieCategory = categoryAndShow.0
+        let showsKind = categoryAndShow.1
+        SVProgressHUD.show(withStatus: AppConstant.cargando)
+        let urlHost = HOST + showsKind + movieCategory + API_KEY + LANG
+        guard let url = URL(string: urlHost) else { return }
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
             guard let data = data, error == nil else {
                 self?.presenter?.interactorDidFetchMovies(with: .failure(FetchErrorMovies.failed))
                 return
             }
-            
             do {
                 let entities = try JSONDecoder().decode(Popular.self, from: data)
-                
-                print("ENTITIES \(entities)   DATA \(data)")
                 self?.presenter?.interactorDidFetchMovies(with: .success(entities))
             }
             catch {
                 self?.presenter?.interactorDidFetchMovies(with: .failure(error))
             }
+            SVProgressHUD.dismiss()
         }
         task.resume()
     }
     
+    func cerrarSession() {
+        do {
+            try Auth.auth().signOut()
+            let defaults = UserDefaults.standard
+            defaults.removeObject(forKey: defaultKeys.email)
+            defaults.synchronize()
+            self.presenter?.interactorSignOutSuccess()
+            
+        } catch {
+            self.presenter?.interactorSignOutError()
+        }
+    }
+    
+   
+    
 }
+

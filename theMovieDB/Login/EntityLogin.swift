@@ -7,8 +7,3 @@
 
 import Foundation
 
-struct Login: Codable {
-    let email:String
-    let message:String
-}
-

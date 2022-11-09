@@ -10,7 +10,7 @@ import UIKit
 class CollectionViewCellCompanies: UICollectionViewCell {
     
     
-    private let deviceImageView: UIImageView = {
+    private let movieImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
@@ -22,52 +22,66 @@ class CollectionViewCellCompanies: UICollectionViewCell {
     
     private let labelName: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Helvetica Neue Bold", size: 3)
+        label.font = UIFont(name: AppConstant.font_helvetica, size: 10)
         label.textColor = .black
-        label.backgroundColor = .green
+        label.textAlignment = .center
         return label
     }()
     
-
-    override init(frame: CGRect) {
-        super.init(frame: .zero)
-        
-      
+    //StackView
+    private let StackViewCompanies: UIStackView = {
+        let stackViewHorizontal = UIStackView()
+        stackViewHorizontal.translatesAutoresizingMaskIntoConstraints = false
+        stackViewHorizontal.axis = .horizontal
+        return stackViewHorizontal
+    }()
+    
+    //CollectionView
+    private let collectionViewVideo: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = .init(width: 178, height: 310)
+        layout.scrollDirection = .vertical
+        layout.collectionView?.backgroundColor = .purple
        
         
-        
-        
+        let collectionViewMovies = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionViewMovies.translatesAutoresizingMaskIntoConstraints = false
+        return collectionViewMovies
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: .zero)
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        fatalError(AppConstant.init_code_message)
     }
     
     func configureCompanyCell(model: ProductionCompany) {
-        print("COMPANY \(model.name)")
         let modelo = model.logoPath
         if modelo != nil {
-            addSubview(deviceImageView)
+            addSubview(movieImageView)
             NSLayoutConstraint.activate([
-                deviceImageView.topAnchor.constraint(equalTo: self.topAnchor),
-                deviceImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-                deviceImageView.widthAnchor.constraint(equalToConstant: 80),
-                deviceImageView.heightAnchor.constraint(equalToConstant: 80),
+                movieImageView.topAnchor.constraint(equalTo: self.topAnchor),
+                movieImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+                movieImageView.widthAnchor.constraint(equalToConstant: 80),
+                movieImageView.heightAnchor.constraint(equalToConstant: 80),
             ])
            
             let url = URL(string: "\(AppConstant.HOST_MEDIA)\(modelo ?? "")")
-            deviceImageView.loader(url: url!)
+            movieImageView.loader(url: url!)
         } else {
-            addSubview(labelName)
+            addSubview(StackViewCompanies)
+            StackViewCompanies.addArrangedSubview(labelName)
             labelName.numberOfLines = 0
          
             NSLayoutConstraint.activate([
                 labelName.topAnchor.constraint(equalTo: self.topAnchor),
                 labelName.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-                labelName.widthAnchor.constraint(equalToConstant: 100),
+                labelName.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+                labelName.leadingAnchor.constraint(equalTo: self.leadingAnchor)
             ])
-            labelName.text = "Company"
-            print("SIN FOTO COMPANY \(model.name)")
+            labelName.text = model.name
         }
        
     }
