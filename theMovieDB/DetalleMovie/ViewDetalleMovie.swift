@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import AVFoundation
 
 protocol DetalleMovieViewProtocol {
     var presenter: DetalleMoviePresenterProtocol? { get set }
@@ -133,7 +134,7 @@ class DetalleMovieViewController: UIViewController, DetalleMovieViewProtocol, UI
     override func viewDidLoad() {
         super.viewDidLoad()
         setupScrollView()
-        
+
         view.backgroundColor = .black
         contentView.addSubview(stackViewVertical)
         stackViewVertical.addArrangedSubview(imageBackgroud)
@@ -387,5 +388,29 @@ class DetalleMovieViewController: UIViewController, DetalleMovieViewProtocol, UI
             return cell
         }
       
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == self.collectionViewVideos {
+            
+            playVideo()
+        }
+    }
+    
+    func playVideo() {
+        let videoURL = URL(string: "https://i.vimeocdn.com/video/1215857000-4c36cb0109eaaf5ff93d2a99be8c4be40c43cc46fffd09074e564595bd2a0f5b-d?mw=1920&mh=1080&q=70")
+        
+        let player = AVPlayer(url: videoURL!)
+        let playerLayer = AVPlayerLayer(player: player)
+        print("UNOOO")
+        playerLayer.frame = self.view.bounds
+        print("DOSSS")
+        playerLayer.videoGravity = .resizeAspect
+        print("TREEESSS")
+        self.view.layer.addSublayer(playerLayer)
+        print("CUATROOO")
+        player.play()
+        print("CINCO")
+        
     }
 }

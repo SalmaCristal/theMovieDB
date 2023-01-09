@@ -58,7 +58,7 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
     //CollectionView
     private let collectionViewMovies: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = .init(width: 178, height: 310)
+        layout.itemSize = .init(width: (UIScreen.main.bounds.width/2)-30, height: 310)
         layout.scrollDirection = .vertical
         layout.collectionView?.backgroundColor = .purple
         let collectionViewMovies = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -107,13 +107,18 @@ class MoviesViewController: UIViewController, AnyViewMovies, UICollectionViewDat
         
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     func confNavigationBar () {
         navigationBar = UINavigationBar(frame: CGRect(
             x: 0,
-            y: 25,
+            y: UIScreen.main.bounds.height/15,
             width: self.view.frame.width,
             height: 44
         ))
+       
         customNavigationItem = UINavigationItem()
         let rightBarButton = UIBarButtonItem(image: UIImage(systemName: AppConstant.icono_menu), style: .plain, target: self, action: #selector(menuOpciones))
         rightBarButton.tintColor = .white
