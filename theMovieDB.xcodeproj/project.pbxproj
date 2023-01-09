@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BF2FF02B2915848600DCEB34 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BF2FF02A2915848500DCEB34 /* GoogleService-Info.plist */; };
+		84108BE7296657D7003C05B6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84108BE6296657D7003C05B6 /* GoogleService-Info.plist */; };
 		BF2FF02D2915A41D00DCEB34 /* ViewMovies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2FF02C2915A41D00DCEB34 /* ViewMovies.swift */; };
 		BF2FF0312915A45900DCEB34 /* InteractorMovies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2FF0302915A45900DCEB34 /* InteractorMovies.swift */; };
 		BF2FF0332915A48300DCEB34 /* PresenterMovies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2FF0322915A48300DCEB34 /* PresenterMovies.swift */; };
@@ -51,7 +51,7 @@
 /* Begin PBXFileReference section */
 		03A488F7CE449E5667B04527 /* Pods_theMovieDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_theMovieDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		105558972938D9D2F279C85C /* Pods-theMovieDB.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-theMovieDB.debug.xcconfig"; path = "Target Support Files/Pods-theMovieDB/Pods-theMovieDB.debug.xcconfig"; sourceTree = "<group>"; };
-		BF2FF02A2915848500DCEB34 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		84108BE6296657D7003C05B6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BF2FF02C2915A41D00DCEB34 /* ViewMovies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewMovies.swift; sourceTree = "<group>"; };
 		BF2FF0302915A45900DCEB34 /* InteractorMovies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractorMovies.swift; sourceTree = "<group>"; };
 		BF2FF0322915A48300DCEB34 /* PresenterMovies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenterMovies.swift; sourceTree = "<group>"; };
@@ -147,7 +147,7 @@
 				BF32D3202914BE2C002A31C3 /* Assets.xcassets */,
 				BF32D3222914BE2C002A31C3 /* LaunchScreen.storyboard */,
 				BF32D3252914BE2C002A31C3 /* Info.plist */,
-				BF2FF02A2915848500DCEB34 /* GoogleService-Info.plist */,
+				84108BE6296657D7003C05B6 /* GoogleService-Info.plist */,
 			);
 			path = theMovieDB;
 			sourceTree = "<group>";
@@ -320,8 +320,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF32D3242914BE2C002A31C3 /* LaunchScreen.storyboard in Resources */,
+				84108BE7296657D7003C05B6 /* GoogleService-Info.plist in Resources */,
 				BF32D3212914BE2C002A31C3 /* Assets.xcassets in Resources */,
-				BF2FF02B2915848600DCEB34 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
